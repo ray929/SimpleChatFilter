@@ -16,11 +16,6 @@
 - Works on top of chat-replacement addons that respect the standard chat message filter chain.
 - English, Simplified Chinese and Traditional Chinese interface, following the client language. The language is a drop-down; picking a different one asks whether to reload the UI right away.
 
-### Credits
-
-- Settings layout and the minimap button follow [CChatNotifier](https://github.com/coolmodi/CChatNotifier) by coolmodi.
-- The chat message filter approach follows [WindChatFilter](https://github.com/fang2hou/WindChatFilter) by fang2hou; this addon is meant to be used instead of it, not alongside it.
-
 ## 简体中文
 
 **SimpleChatFilter 把含有你设定关键词的聊天行屏蔽掉，并且留下一份"屏蔽了什么"的记录。**
@@ -37,11 +32,6 @@
 - 在尊重标准聊天消息过滤器链的聊天美化/替换插件上正常工作。
 - 英文、简体中文、正体中文界面，跟随客户端语言；语言是下拉菜单，选了与当前不同的一项会问要不要立刻重载界面。
 
-### 致谢
-
-- 设置结构与最小地图按钮写法参考 coolmodi 的 [CChatNotifier](https://github.com/coolmodi/CChatNotifier)。
-- 聊天消息过滤器写法参考 fang2hou 的 [WindChatFilter](https://github.com/fang2hou/WindChatFilter)；本插件是用来替代它，不是与它并用。
-
 ## 正体中文
 
 **SimpleChatFilter 會把含有你設定關鍵字的聊天行遮蔽掉，並留下一份「遮蔽了什麼」的紀錄。**
@@ -57,8 +47,3 @@
 - 總開關、「僅記錄不遮蔽」試用模式。
 - 在尊重標準聊天訊息過濾器鏈的聊天美化／替換插件上正常工作。
 - 英文、簡體中文、正體中文介面，跟隨客戶端語言；語言是下拉選單，選了與目前不同的一項會問要不要立刻重新載入介面。
-
-### 致謝
-
-- 設定結構與小地圖按鈕寫法參考 coolmodi 的 [CChatNotifier](https://github.com/coolmodi/CChatNotifier)。
-- 聊天訊息過濾器寫法參考 fang2hou 的 [WindChatFilter](https://github.com/fang2hou/WindChatFilter)；本插件是用來取代它，不是與它並用。
