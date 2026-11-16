@@ -1,0 +1,6 @@
+package-as: SimpleChatFilter
+
+ignore:
+  - .gitignore
+  - pkgmeta.yaml
+  - README.md

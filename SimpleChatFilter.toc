@@ -1,0 +1,31 @@
+## Interface: 120105, 16001
+## Title: SimpleChatFilter
+## Title-zhCN: SimpleChatFilter
+## Title-zhTW: SimpleChatFilter
+## Author: ray929
+## Version: @project-version@
+## Notes: Hides chat lines containing blacklisted keywords and keeps a log of what it hid.
+## Notes-zhCN: 屏蔽含黑名单关键词的聊天行，并留下屏蔽记录。
+## Notes-zhTW: 遮蔽含黑名單關鍵字的聊天行，並留下遮蔽紀錄。
+## SavedVariables: SimpleChatFilterDB
+## IconTexture: Interface\ICONS\UI_Chat
+## X-Curse-Project-ID: 1809515
+## X-Category: Chat & Communication
+
+i18n/loc.lua
+i18n/enUS.lua
+i18n/zhCN.lua
+i18n/zhTW.lua
+
+Core/util.lua
+Core/log.lua
+Core/filter.lua
+
+UI/widgets.lua
+UI/keywordPage.lua
+UI/channelPage.lua
+UI/logPage.lua
+UI/optionsPage.lua
+UI/minimap.lua
+
+settings.lua
