@@ -466,7 +466,7 @@ function ns.ResetDedupe()
 end
 
 ----------------------------------------------------------------------------------------------------------------
--- Anti-spam: the same person posting the same text across several channels
+-- Anti-spam: the same person posting the same text again and again
 ----------------------------------------------------------------------------------------------------------------
 
 local SPAM_WINDOW = 8 -- seconds between two copies to still count as one burst
@@ -481,15 +481,13 @@ function ns.ResetSpam()
     ns.spamCount = 0
 end
 
---- Is this line the second (or later) copy of a cross-channel burst?
--- Keyed by sender + normalised text: the same sentence re-sent is caught, a
--- different sentence from the same person is not. The place check matters too —
--- repeating one line inside ONE channel is ordinary chatter and is left to the
--- keyword list; what marks this as spam is that the copy jumped to another channel.
--- @param place "<event key>\1<channel name>" of the line being checked
+--- Is this line a repeat of what the same person just said?
+-- Keyed by sender + normalised text only: the channel it arrives on is
+-- deliberately NOT part of the key (nor compared), so a line shouted into a
+-- second channel right after being said in the first one is caught too.
 -- @return true when the line should be hidden as spam
-function ns.IsCrossChannelSpam(senderText, norm, place)
-    if type(norm) ~= "string" or norm == "" or type(place) ~= "string" then
+function ns.IsSpam(senderText, norm)
+    if type(norm) ~= "string" or norm == "" then
         return false
     end
 
@@ -497,15 +495,18 @@ function ns.IsCrossChannelSpam(senderText, norm, place)
     local now = GetTime()
     local last = ns.spamSeen[key]
 
-    if last and (now - last.t) <= SPAM_WINDOW and last.place ~= place then
-        -- Refresh the stamp so a continuing burst keeps being caught, and move the
-        -- place forward so A -> B -> A is caught as well.
-        last.t = now
-        last.place = place
-        return true
-    end
+    if last then
+        local elapsed = now - last.t
 
-    if not last then
+        -- elapsed == 0 means the very same line was handed to the filter again
+        -- inside one frame (every chat frame that listens to the event delivers a
+        -- copy), which is not a repeat the player typed. Calling GetTime() twice
+        -- within a frame returns the same value, so this tells the two apart.
+        if elapsed > 0 and elapsed <= SPAM_WINDOW then
+            last.t = now
+            return true
+        end
+    else
         ns.spamCount = ns.spamCount + 1
         if ns.spamCount > SPAM_MAX_ENTRIES then
             ns.ResetSpam()
@@ -513,7 +514,7 @@ function ns.IsCrossChannelSpam(senderText, norm, place)
         end
     end
 
-    ns.spamSeen[key] = { t = now, place = place }
+    ns.spamSeen[key] = { t = now }
 
     return false
 end
@@ -605,11 +606,12 @@ local function Process(event, msg, sender, channelString, zoneChannelID)
         return false
     end
 
-    -- Cross-channel spam, when the player turned it on. Same text repeated inside ONE
-    -- channel stays with the keyword list; the channel change is what gets caught here.
+    -- Repeat spam, when the player turned it on. The channel does not matter here:
+    -- saying the same thing twice in one channel is caught just like saying it once
+    -- in each of two channels.
     local spam = false
     if settings.antiSpam then
-        spam = ns.IsCrossChannelSpam(senderText, norm, info.key .. "\1" .. (channel or ""))
+        spam = ns.IsSpam(senderText, norm)
     end
 
     local matched = nil
