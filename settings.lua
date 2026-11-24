@@ -3,6 +3,7 @@ local addonName, ns = ...
 local DEFAULTS_SETTINGS = {
     enabled = true,
     logOnly = false,
+    antiSpam = false, -- opt-in: catch one person pasting the same line into several channels
     showRealm = false,
     showMinimap = true,
     minimapAngle = 200,

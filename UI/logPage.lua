@@ -25,6 +25,17 @@ local COL = {
 
 local page
 
+--- Keyword column text. "@spam" is a marker written by the filter, not a keyword,
+-- so it is translated on display instead of being stored as localised text in the
+-- save file (where it would freeze the language used on the day it was blocked).
+local function KeywordText(entry)
+    local kw = entry and entry.kw or ""
+    if type(kw) == "string" and kw:sub(1, 1) == "@" then
+        return ns.L("LOG_REASON_" .. kw:sub(2):upper())
+    end
+    return kw
+end
+
 function ns.CreateLogPage(parent)
     if page then
         return page
@@ -182,7 +193,7 @@ function ns.CreateLogPage(parent)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:AddLine(page:ChannelText(self.entry), 1, 1, 1)
             GameTooltip:AddLine(ns.L("LOG_COL_FROM") .. ": " .. tostring(self.entry.from or "?"), 0.85, 0.85, 0.85)
-            GameTooltip:AddLine(ns.L("LOG_COL_KEYWORD") .. ": " .. tostring(self.entry.kw or ""), 1, 0.82, 0.3)
+            GameTooltip:AddLine(ns.L("LOG_COL_KEYWORD") .. ": " .. tostring(KeywordText(self.entry)), 1, 0.82, 0.3)
             GameTooltip:AddLine(self.entry.msg or "", 1, 0.95, 0.8, true)
             GameTooltip:Show()
         end)
@@ -331,7 +342,7 @@ function ns.CreateLogPage(parent)
                     from = ns.NameWithoutRealm(from)
                 end
                 W.FitText(row.from, from, COL.from.width)
-                W.FitText(row.keyword, entry.kw or "", COL.keyword.width)
+                W.FitText(row.keyword, KeywordText(entry), COL.keyword.width)
                 W.FitText(row.msg, entry.msg or "", COL.msg.width)
                 row:Show()
             else

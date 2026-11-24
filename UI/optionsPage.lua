@@ -152,6 +152,16 @@ function ns.CreateOptionPage(parent)
         end
     end)
 
+    -- Off by default: it hides lines that no keyword asked for, so it has to be a
+    -- deliberate choice. Turning it off drops the remembered burst so re-enabling it
+    -- starts from a clean state.
+    page.antiSpam = AddBox("antiSpam", "OPT_ANTISPAM", function(value)
+        ns.db.settings.antiSpam = value
+        if not value and ns.ResetSpam then
+            ns.ResetSpam()
+        end
+    end)
+
     y = y - 6
 
     page.headingKeyword = W.Heading(page, ns.L("OPT_HEAD_KEYWORD"))
@@ -214,6 +224,7 @@ function ns.CreateOptionPage(parent)
     function page:Refresh()
         self.enabled:Sync()
         self.logOnly:Sync()
+        self.antiSpam:Sync()
         self.showRealm:Sync()
         self.showMinimap:Sync()
 

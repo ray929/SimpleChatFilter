@@ -465,6 +465,59 @@ function ns.ResetDedupe()
     ns.dedupeCount = 0
 end
 
+----------------------------------------------------------------------------------------------------------------
+-- Anti-spam: the same person posting the same text across several channels
+----------------------------------------------------------------------------------------------------------------
+
+local SPAM_WINDOW = 8 -- seconds between two copies to still count as one burst
+local SPAM_MAX_ENTRIES = 400
+local SPAM_REASON = "@spam" -- log marker; the log page translates it
+
+ns.spamSeen = {}
+ns.spamCount = 0
+
+function ns.ResetSpam()
+    ns.spamSeen = {}
+    ns.spamCount = 0
+end
+
+--- Is this line the second (or later) copy of a cross-channel burst?
+-- Keyed by sender + normalised text: the same sentence re-sent is caught, a
+-- different sentence from the same person is not. The place check matters too —
+-- repeating one line inside ONE channel is ordinary chatter and is left to the
+-- keyword list; what marks this as spam is that the copy jumped to another channel.
+-- @param place "<event key>\1<channel name>" of the line being checked
+-- @return true when the line should be hidden as spam
+function ns.IsCrossChannelSpam(senderText, norm, place)
+    if type(norm) ~= "string" or norm == "" or type(place) ~= "string" then
+        return false
+    end
+
+    local key = senderText .. "\1" .. norm
+    local now = GetTime()
+    local last = ns.spamSeen[key]
+
+    if last and (now - last.t) <= SPAM_WINDOW and last.place ~= place then
+        -- Refresh the stamp so a continuing burst keeps being caught, and move the
+        -- place forward so A -> B -> A is caught as well.
+        last.t = now
+        last.place = place
+        return true
+    end
+
+    if not last then
+        ns.spamCount = ns.spamCount + 1
+        if ns.spamCount > SPAM_MAX_ENTRIES then
+            ns.ResetSpam()
+            ns.spamCount = 1
+        end
+    end
+
+    ns.spamSeen[key] = { t = now, place = place }
+
+    return false
+end
+
 --- Decide whether this line must be thrown away, and store it first when it is.
 local function Process(event, msg, sender, channelString, zoneChannelID)
     local db = ns.db
@@ -540,50 +593,58 @@ local function Process(event, msg, sender, channelString, zoneChannelID)
         return false
     end
 
-    local keywords = ns.activeKeywords
-    if not keywords or #keywords == 0 then
-        return false
+    local senderText = "?"
+    if ns.IsReadable(sender) and type(sender) == "string" and sender ~= "" then
+        senderText = sender
     end
 
+    -- Normalise once: the anti-spam check and the keyword match both need it, so the
+    -- early "no keywords configured" bail-out has to happen after this point.
     local norm = ns.Normalize(msg)
     if norm == "" then
         return false
     end
 
-    local matched = nil
-    for i = 1, #keywords do
-        local kw = keywords[i]
-        local parts = kw.parts
+    -- Cross-channel spam, when the player turned it on. Same text repeated inside ONE
+    -- channel stays with the keyword list; the channel change is what gets caught here.
+    local spam = false
+    if settings.antiSpam then
+        spam = ns.IsCrossChannelSpam(senderText, norm, info.key .. "\1" .. (channel or ""))
+    end
 
-        if not parts or #parts == 0 then
-            -- Defensive: an entry that somehow lost its parts still matches as a
-            -- single glued string instead of silently doing nothing.
-            if kw.norm and kw.norm ~= "" and norm:find(kw.norm, 1, true) then
-                matched = kw
-                break
-            end
-        else
-            local all = true
-            for p = 1, #parts do
-                if not norm:find(parts[p], 1, true) then
-                    all = false
+    local matched = nil
+    local keywords = ns.activeKeywords
+
+    if keywords and #keywords > 0 then
+        for i = 1, #keywords do
+            local kw = keywords[i]
+            local parts = kw.parts
+
+            if not parts or #parts == 0 then
+                -- Defensive: an entry that somehow lost its parts still matches as a
+                -- single glued string instead of silently doing nothing.
+                if kw.norm and kw.norm ~= "" and norm:find(kw.norm, 1, true) then
+                    matched = kw
                     break
                 end
-            end
-            if all then
-                matched = kw
-                break
+            else
+                local all = true
+                for p = 1, #parts do
+                    if not norm:find(parts[p], 1, true) then
+                        all = false
+                        break
+                    end
+                end
+                if all then
+                    matched = kw
+                    break
+                end
             end
         end
     end
 
-    if not matched then
+    if not matched and not spam then
         return false
-    end
-
-    local senderText = "?"
-    if ns.IsReadable(sender) and type(sender) == "string" and sender ~= "" then
-        senderText = sender
     end
 
     -- One line reaches the filter once per chat window that listens to that
@@ -611,7 +672,7 @@ local function Process(event, msg, sender, channelString, zoneChannelID)
         channel = channel,
         from = senderText,
         msg = ns.StoreMessage(msg),
-        kw = matched.text,
+        kw = matched and matched.text or SPAM_REASON,
     })
 
     -- "log only" mode: record it, then let the chat frame draw it.
