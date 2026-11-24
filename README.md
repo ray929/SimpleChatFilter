@@ -13,7 +13,7 @@
 - Clearing: a two-step "clear all" button, plus automatic cleanup by age (default one month) and by count (default 2000 entries), each switchable on its own.
 - A minimap button: left click opens the options page, right click opens the blocked log, middle click toggles filtering. Drag it around the minimap; it snaps to the ring and remembers where you put it. It can be hidden in the options page.
 - A master switch and a "log only, do not hide" mode for trying keywords out.
-- Repeat-spam guard, off by default: when one person says the same thing again within a few seconds, the repeats are hidden — the channel does not matter, one channel or several.
+- Repeat-spam guard, off by default: when one person says the same thing again within half a minute, the repeats are hidden — the channel does not matter, one channel or several.
 - Works on top of chat-replacement addons that respect the standard chat message filter chain.
 - English, Simplified Chinese and Traditional Chinese interface, following the client language. The language is a drop-down; picking a different one asks whether to reload the UI right away.
 
@@ -30,7 +30,7 @@
 - 清理：两步确认的「全部清理」，以及按时间（默认一个月）和按条数（默认 2000 条）的自动清理，两个开关各自独立。
 - 小地图按钮：左键打开选项页，右键打开屏蔽日志，中键切换总开关；按住左键可绕小地图拖动，松手吸附到圆环并记住位置，可在选项页隐藏。
 - 总开关、「仅记录不屏蔽」试用模式。
-- 连续刷屏拦截，默认关闭：同一个人在几秒内重复说同一句话时，重复的那些也会被屏蔽——不看频道，同一个频道里连发和发到多个频道都算。
+- 连续刷屏拦截，默认关闭：同一个人在半分钟内重复说同一句话时，重复的那些也会被屏蔽——不看频道，同一个频道里连发和发到多个频道都算。
 - 在尊重标准聊天消息过滤器链的聊天美化/替换插件上正常工作。
 - 英文、简体中文、正體中文界面，跟随客户端语言；语言是下拉菜单，选了与当前不同的一项会问要不要立刻重载界面。
 
@@ -47,6 +47,6 @@
 - 清理：兩步確認的「全部清理」，以及依時間（預設一個月）與依筆數（預設 2000 筆）的自動清理，兩個開關各自獨立。
 - 小地圖按鈕：左鍵開啟選項頁，右鍵開啟遮蔽紀錄，中鍵切換總開關；按住左鍵可繞小地圖拖動，放開後吸附到圓環並記住位置，可在選項頁隱藏。
 - 總開關、「僅記錄不遮蔽」試用模式。
-- 連續洗頻攔截，預設關閉：一個人在幾秒內重複說同一句話時，重複的那些也會被遮蔽——不看頻道，同一個頻道裡連發和發到多個頻道都算。
+- 連續洗頻攔截，預設關閉：一個人在半分鐘內重複說同一句話時，重複的那些也會被遮蔽——不看頻道，同一個頻道裡連發和發到多個頻道都算。
 - 在尊重標準聊天訊息過濾器鏈的聊天美化／替換插件上正常工作。
 - 英文、簡體中文、正體中文介面，跟隨客戶端語言；語言是下拉選單，選了與目前不同的一項會問要不要立刻重新載入介面。

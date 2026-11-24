@@ -469,7 +469,7 @@ end
 -- Anti-spam: the same person posting the same text again and again
 ----------------------------------------------------------------------------------------------------------------
 
-local SPAM_WINDOW = 8 -- seconds between two copies to still count as one burst
+local SPAM_WINDOW = 30 -- seconds between two copies to still count as one burst
 local SPAM_MAX_ENTRIES = 400
 local SPAM_REASON = "@spam" -- log marker; the log page translates it
 
@@ -496,14 +496,14 @@ function ns.IsSpam(senderText, norm)
     local last = ns.spamSeen[key]
 
     if last then
-        local elapsed = now - last.t
+        local elapsed = now - last
 
         -- elapsed == 0 means the very same line was handed to the filter again
         -- inside one frame (every chat frame that listens to the event delivers a
         -- copy), which is not a repeat the player typed. Calling GetTime() twice
         -- within a frame returns the same value, so this tells the two apart.
         if elapsed > 0 and elapsed <= SPAM_WINDOW then
-            last.t = now
+            ns.spamSeen[key] = now
             return true
         end
     else
@@ -514,7 +514,9 @@ function ns.IsSpam(senderText, norm)
         end
     end
 
-    ns.spamSeen[key] = { t = now }
+    -- The stamp is stored as a bare number, not a { t = now } table: one fewer
+    -- allocation per entry, and this table is the only thing here that grows.
+    ns.spamSeen[key] = now
 
     return false
 end
