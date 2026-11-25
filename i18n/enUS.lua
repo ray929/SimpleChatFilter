@@ -94,6 +94,7 @@ ns.RegisterLocale("enUS", {
     MSG_ADDED       = "Added keyword \"%s\".",
     MSG_DELETED     = "Deleted keyword \"%s\".",
     MSG_CLEARED     = "Blocked log cleared.",
+    MSG_SETTINGS_COMBAT = "The settings cannot be opened in combat. They will open once combat ends.",
     ERR_EMPTY       = "Nothing to add.",
     ERR_MEANINGLESS = "That line has no letters or numbers left after normalisation.",
     ERR_DUP         = "That keyword already exists.",

@@ -1,5 +1,10 @@
 local addonName, ns = ...
 
+-- Forward declaration: the event frame is created near the bottom, but
+-- ns.OpenSettings has to register on it. Declaring it here keeps the frame
+-- creation where it is and still lets the function close over it.
+local events
+
 local DEFAULTS_SETTINGS = {
     enabled = true,
     logOnly = false,
@@ -423,8 +428,27 @@ function ns.RegisterCategories()
 end
 
 --- Open the settings window on one of our pages.
+-- The settings panel is a protected frame: calling into it during combat is
+-- blocked by the client and lands in ADDON_ACTION_BLOCKED, which BugSack then
+-- reports as a broken addon. The request is parked instead and replayed once
+-- combat ends, so the button still does something useful.
 -- @param which "keyword", "channel", "log" or "options"
 function ns.OpenSettings(which)
+    which = which or "options"
+
+    if InCombatLockdown and InCombatLockdown() then
+        -- Only nag once: mashing the minimap button should not fill the chat frame.
+        local first = ns.pendingSettings == nil
+        ns.pendingSettings = which
+        if events then
+            pcall(events.RegisterEvent, events, "PLAYER_REGEN_ENABLED")
+        end
+        if first then
+            ns.Print(ns.L("MSG_SETTINGS_COMBAT"))
+        end
+        return
+    end
+
     if not ns.RegisterCategories() then
         ns.Print(ns.L("HELP"))
         return
@@ -592,7 +616,7 @@ local function StartTicker()
     ns.timeoutTicker = ticker
 end
 
-local events = CreateFrame("Frame")
+events = CreateFrame("Frame")
 
 --- Register one event, tolerating a client that does not know it. An unknown
 -- event name raises a hard error out of RegisterEvent, and one stale name would
@@ -621,6 +645,18 @@ events:SetScript("OnEvent", function(self, event, arg1)
         if arg1 == addonName then
             OnAddonLoaded()
             self:UnregisterEvent("ADDON_LOADED")
+        end
+        return
+    end
+
+    -- Deferred settings open: registered only while a request is parked, so the
+    -- event costs nothing during normal play.
+    if event == "PLAYER_REGEN_ENABLED" then
+        self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        local which = ns.pendingSettings
+        ns.pendingSettings = nil
+        if which then
+            ns.OpenSettings(which)
         end
         return
     end

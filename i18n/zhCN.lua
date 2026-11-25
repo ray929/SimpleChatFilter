@@ -93,6 +93,7 @@ ns.RegisterLocale("zhCN", {
     MSG_ADDED       = "已添加关键词“%s”。",
     MSG_DELETED     = "已删除关键词“%s”。",
     MSG_CLEARED     = "屏蔽日志已清空。",
+    MSG_SETTINGS_COMBAT = "战斗中无法打开设置，脱战后会自动打开。",
     ERR_EMPTY       = "没有可添加的内容。",
     ERR_MEANINGLESS = "这一行归一化之后没有剩下任何字符。",
     ERR_DUP         = "这个关键词已经存在。",

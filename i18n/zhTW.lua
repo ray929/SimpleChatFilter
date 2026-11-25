@@ -94,6 +94,7 @@ ns.RegisterLocale("zhTW", {
     MSG_ADDED       = "已新增關鍵字「%s」。",
     MSG_DELETED     = "已刪除關鍵字「%s」。",
     MSG_CLEARED     = "遮蔽紀錄已清除。",
+    MSG_SETTINGS_COMBAT = "戰鬥中無法開啟設定，脫戰後會自動開啟。",
     ERR_EMPTY       = "沒有可新增的內容。",
     ERR_MEANINGLESS = "這一列正規化之後沒有剩下任何字元。",
     ERR_DUP         = "這個關鍵字已經存在。",
