@@ -80,6 +80,7 @@ ns.RegisterLocale("zhTW", {
     OPT_ENABLED     = "啟用過濾",
     OPT_LOGONLY     = "僅記錄，不遮蔽",
     OPT_ANTISPAM    = "攔截連續洗頻",
+    OPT_ANTISPAM_NOTE = "過濾 60 秒內同一個人的相同內容的發言。",
     OPT_SHOWREALM   = "紀錄裡顯示伺服器後綴",
     OPT_MINIMAP     = "顯示小地圖按鈕",
     OPT_MINLEN      = "關鍵字最短",

@@ -79,6 +79,7 @@ ns.RegisterLocale("zhCN", {
     OPT_ENABLED     = "启用过滤",
     OPT_LOGONLY     = "仅记录，不屏蔽",
     OPT_ANTISPAM    = "拦截连续刷屏",
+    OPT_ANTISPAM_NOTE = "过滤 60 秒内同一个人的相同内容的发言。",
     OPT_SHOWREALM   = "日志里显示服务器后缀",
     OPT_MINIMAP     = "显示小地图按钮",
     OPT_MINLEN      = "关键词最短",

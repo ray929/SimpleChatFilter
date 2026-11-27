@@ -469,7 +469,7 @@ end
 -- Anti-spam: the same person posting the same text again and again
 ----------------------------------------------------------------------------------------------------------------
 
-local SPAM_WINDOW = 30 -- seconds between two copies to still count as one burst
+local SPAM_WINDOW = 60 -- seconds between two copies to still count as one burst
 local SPAM_MAX_ENTRIES = 400
 local SPAM_REASON = "@spam" -- log marker; the log page translates it
 

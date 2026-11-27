@@ -162,7 +162,13 @@ function ns.CreateOptionPage(parent)
         end
     end)
 
-    y = y - 6
+    -- The window is a constant, so it is spelled out here instead of being left to
+    -- the tooltip: "why was that line hidden" is the first question this switch
+    -- raises. Indented to the label column so it reads as part of the same row.
+    page.antiSpamNote = W.Dim(page, ns.L("OPT_ANTISPAM_NOTE"))
+    page.antiSpamNote:SetPoint("TOPLEFT", page, "TOPLEFT", LABEL_X + 28, y + 6)
+
+    y = y - 30
 
     page.headingKeyword = W.Heading(page, ns.L("OPT_HEAD_KEYWORD"))
     page.headingKeyword:SetPoint("TOPLEFT", page, "TOPLEFT", 10, y)

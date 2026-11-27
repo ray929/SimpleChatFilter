@@ -80,6 +80,7 @@ ns.RegisterLocale("enUS", {
     OPT_ENABLED     = "Filtering enabled",
     OPT_LOGONLY     = "Log only, do not hide",
     OPT_ANTISPAM    = "Block repeat spam",
+    OPT_ANTISPAM_NOTE = "Hides the same text from the same person within 60 seconds.",
     OPT_SHOWREALM   = "Show the realm suffix in the log",
     OPT_MINIMAP     = "Show the minimap button",
     OPT_MINLEN      = "Shortest keyword",
